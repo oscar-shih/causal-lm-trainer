@@ -3,15 +3,16 @@ import torch
 def get_train_valid_dataset(training_args, tokenizer, model_config):
     # Load dataset
     from datasets import load_dataset
-    dataset = load_dataset("squad")
-    train_dataset = dataset['validation']
-    valid_dataset = dataset['validation']
+    dataset = load_dataset("voidful/NMSQA-CODE")
+    train_dataset = dataset['train']
+    valid_dataset = dataset['dev']
 
     def process_data_to_model_inputs(item):
-        input_sent = item["question"]
-        label_sent = item['answers']['text'][0]
+        input_question = convert_vtok(item['hubert_100_question_unit'])
+        input_context = convert_vtok(item['hubert_100_context_unit'])
+        label_sent = convert_vtok(item['hubert_100_answer_unit'])
 
-        input_sent_tokens = tokenizer.encode(input_sent, return_tensors='pt',
+        input_sent_tokens = tokenizer.encode(input_question, input_context, return_tensors='pt',
                                                               add_special_tokens=False).to('cuda')
         label_sent_tokens = tokenizer.encode(label_sent, return_tensors='pt',
                                                     add_special_tokens=False).to('cuda')
@@ -43,3 +44,13 @@ def get_train_valid_dataset(training_args, tokenizer, model_config):
     print("valid_dataset", valid_dataset[0])
 
     return train_dataset, valid_dataset
+import json
+def convert_vtok(unit_code):
+    for i in range(len(unit_code)):
+        try:
+            code = json.loads(unit_code[i])[0]['merged_code']
+        except:
+            continue
+        v_tok = [f"v_tok_{unit}" for unit in code]
+        unit_code[i] = ' '.join(v_tok) # blank is not needed
+    return unit_code
