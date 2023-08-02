@@ -32,9 +32,12 @@ def get_train_valid_dataset(training_args, tokenizer, model_config):
     # Apply the processing function to the datasets
     train_dataset = train_dataset.map(
         process_data_to_model_inputs,
+        cache_file_name="nmsqa-train",
+
     )
     valid_dataset = valid_dataset.map(
         process_data_to_model_inputs,
+        cache_file_name="nmsqa-dev"
     )
 
     columns = ["input_ids", "labels", "attention_mask"]
