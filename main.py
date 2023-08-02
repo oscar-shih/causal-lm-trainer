@@ -110,7 +110,8 @@ if __name__ == "__main__":
             "k_proj",
             "down_proj",
             "gate_proj",
-            "v_proj"],
+            "v_proj"
+        ],
         lora_dropout=0.05,  # dropout probability for layers
         bias="none",
         task_type="CAUSAL_LM",

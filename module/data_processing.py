@@ -46,11 +46,10 @@ def get_train_valid_dataset(training_args, tokenizer, model_config):
     return train_dataset, valid_dataset
 import json
 def convert_vtok(unit_code):
-    for i in range(len(unit_code)):
-        try:
-            code = json.loads(unit_code[i])[0]['merged_code']
-        except:
-            continue
-        v_tok = [f"v_tok_{unit}" for unit in code]
-        unit_code[i] = ' '.join(v_tok) # blank is not needed
+    try:
+        code = json.loads(unit_code)[0]['merged_code']
+    except:
+        return
+    v_tok = [f"v_tok_{unit}" for unit in code]
+    unit_code = ' '.join(v_tok) # blank is not needed
     return unit_code
