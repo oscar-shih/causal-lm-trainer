@@ -4,8 +4,8 @@ def get_train_valid_dataset(training_args, tokenizer, model_config):
     # Load dataset
     from datasets import load_dataset
     dataset = load_dataset("voidful/NMSQA-CODE")
-    train_dataset = dataset['train']
-    valid_dataset = dataset['dev']
+    train_dataset = dataset['train'].filter(lambda x: x['hubert_100_question_unit'] != '')
+    valid_dataset = dataset['dev'].filter(lambda x: x['hubert_100_question_unit'] != '')
 
     def process_data_to_model_inputs(item):
         input_question = convert_vtok(item['hubert_100_question_unit'])
